@@ -1,0 +1,131 @@
+metavar a, b, x ::= {{ com Term variable }} {{ coq nat }}
+indexvar index, i, n, m ::=
+
+grammar
+
+t {{ coq Terms }} , v :: 'Term_' ::=  {{ com Terms }} 
+  | t1 t2   :: :: App {{ com Application }}
+  | \ x . t :: :: Abs {{ com Function }} {{ tex \lambda [[ x ]] . [[ t ]] }}
+  | x       :: :: Var {{ com Variable }}
+  | ( t1 , t2 ) :: :: Tensor {{ com Tensor }}
+
+% Syntactic sugar
+  | let x = t1 in t2 :: S :: Let
+    {{ com Let syntactic sugar }}
+    {{ coq let [[ t1 ]] [[ t2 ]] }}
+    {{ ocaml let [[ t1 ]] [[ t2 ]] }}
+    {{ tex \textbf{let}\ [[ x ]]\ =\ [[ t1 ]]\ \textbf{in}\ [[ t2 ]] }}
+
+% Meta operations
+  | [ t / x ] t' :: M :: Subst
+    {{ com Syntactic substitution }}
+    {{ coq subst [[ t ]] [[ x ]] [[ t' ]] }}
+    {{ ocaml subst [[ t ]] [[ x ]] [[ t' ]] }}
+    {{ tex [ [[ t ]] / [[ x ]] ] / [[ t' ]] }}
+
+  | ( t ) :: M :: Bracket
+    {{ coq ( [[ t ]] ) }}
+    {{ ocaml ( [[ t ]] ) }}
+    {{ com Bracketing }}
+
+A, B :: 'Type_' ::= {{com Types}}
+  | A -> B :: :: Fun  {{ com Function }}
+  | A -o B :: :: LFun {{ com Linear fun }}
+  | A * B  :: :: Products {{ com Products }}
+  | Unit   :: :: Unit {{ com unit }} {{ tex ( ) }}
+
+Ass :: 'Assumption' ::=
+  | x : A :: :: Normal {{ tex [[ x ]] : [[ A ]] }}
+
+G {{ tex \Gamma }}, D {{ tex \Delta }} :: 'TyCtx_' ::=
+  | .        :: :: Empty
+    {{ com Empty }}
+    {{ tex \emptyset }}
+
+  | G , Ass :: :: Ext
+    {{ com Extend with assumption }}
+    {{ tex [[ G ]], [[ Ass ]] }}
+
+  | Ass      :: S :: SingleCtxt
+    {{ coq [[ . , Ass ]] }}
+    {{ ocaml }}
+
+  | D1 ,, D2 :: :: Cat
+    {{ com Disjoint context concatenation }}
+    {{ tex [[ D1 ]] , [[ D2 ]] }}
+
+
+%%%
+
+terminals :: 'terminals_' ::=
+  | -> :: :: arrow      {{ tex \rightarrow }}
+  | -o :: :: linArrow   {{ tex \multimap }}
+  | forall :: :: forall {{ tex \forall }}
+  | * :: :: tensor {{ tex \otimes }}
+
+%%%
+
+formula :: 'formula_' ::=
+ | judgement                  ::   :: judgement
+ | judgement1 && judgement2   ::   :: centerJudge
+   {{ tex \begin{array}{c} [[ judgement1 ]] \\ [[ judgement2 ]] \end{array} }}
+
+ defns
+  Judgements :: '' ::=
+
+defn
+	G |- t : A :: :: Typing :: 'Ty'
+{{tex [[ G ]] \vdash [[ t ]] : [[ A ]]}}
+{{ com Standard lambda-calculus typing }}
+by
+
+---------------------- :: var
+G, x : A |- x : A
+
+G , x : A |- t : B
+---------------------- :: abs
+G |- \x . t : A -> B
+
+G |- t1 : A -> B
+G |- t2 : A
+----------------------------------- :: app
+G |- t1 t2 : B
+
+G |- t1 : A
+G |- t2 : B
+---------------------------------- :: tensor
+G |- ( t1 , t2 ) : A * B
+
+defn
+G | D |- t : A :: :: DualContextTyping :: 'DualTy'
+{{tex [[ G ]] \mid [[ D ]] \vdash [[ t ]] : [[ A ]]}}
+{{ com Dual-context linear-lambda calculus typing }}
+by
+
+------------------------ :: var
+G | x : A |- x : A
+
+G | D , x : A |- t : B
+-------------------------- :: abs
+G | D |- \x . t : A -o B
+
+G | D1 |- t1 : A -o B
+G | D2 |- t2 : A
+------------------------------------------- :: app
+G | D1 ,, D2 |- t1 t2 : B
+
+
+defn
+t ~> t' :: :: OpSemantics :: 'Sem'
+{{ tex [[ t ]] \leadsto [[ t' ]] }}
+{{ com Small-step operational semantics }}
+by
+
+--------------------------------- :: beta
+ (\x . t1) t2 ~> [ t2 / x ] t1
+
+
+
+t1 ~> t1'
+------------------------- :: congAppL
+t1 t2 ~> t1' t2

@@ -1,0 +1,29 @@
+#!/bin/bash
+# Usage:
+#   makepaper
+#     creates latex template and makefile (using makemakefile) in the current directory for paper.tex
+#   makemakefile name
+#     creates latex template and makefile (using makemakefile) in the current directory for name.tex
+
+if [ $# -eq 1 ]
+  then
+      if [[ -f $1.tex ]]
+      then
+	  echo "$1.tex already exists."
+      else
+	  cp ~/.local/bin/paper.template .
+          mv paper.template $1.tex
+	  makemakefile $1
+	  touch references.bib
+      fi
+  else
+    if [[ -f paper.tex ]]
+    then
+	echo "paper.tex already exists."
+    else
+	cp ~/.local/bin/paper.template .
+        mv paper.template paper.tex
+        makemakefile
+        touch reference.bib
+    fi
+fi

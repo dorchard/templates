@@ -1,0 +1,14 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{color}
+
+\newcommand{\dnote}[1]{\textcolor{blue}{Dom: #1}}
+
+\begin{document}
+
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,37 @@
+% Redefine labels (in a way that works with different versions of OTT)
+\providecommand{\SYSTEMdruleTyabsName}{}
+\providecommand{\SYSTEMdruleTyappName}{}
+\providecommand{\SYSTEMdruleTyvarName}{}
+
+\renewcommand{\SYSTEMdruleTyabsName}{$\rightarrow_i$}
+\renewcommand{\SYSTEMdruleTyappName}{$\rightarrow_e$}
+\renewcommand{\SYSTEMdruleTyvarName}{\textsc{var}}
+\renewcommand{\SYSTEMdruleTytensorName}{$\otimes_i$}
+
+% Example redefining the rules to be centered instead
+%\renewcommand{\SYSTEMdrule}[4][]{{\displaystyle\frac{\begin{array}{c}#2\end{array}}{#3}\quad\SYSTEMdrulename{#4}}}
+
+Example inline: $[[ G |- t : A -o B ]]$.
+
+The rules:
+%
+\begin{align*}
+\SYSTEMdruleTyvar{}
+\\[2em]
+\SYSTEMdruleTyabs{}
+\\[2em]
+  \SYSTEMdruleTyapp{}
+  \\[2em]
+  \SYSTEMdruleTytensor{}
+\end{align*}
+
+or reconstituted typing rules:
+
+\begin{align*}
+\inferrule*[Right=\SYSTEMdruleTyappName]
+ {[[ G |- t1 : A -> B ]]
+ \\ [[ G |- t2 : A ]]}
+ {[[ G |- t1 t2 : B ]]}
+\end{align*}
+
+$[[ x : A |- ( x , x ) : A * A ]]$

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Usage:
+#   makemakefile 
+#     creates Makefile in the current directory for paper.tex
+#   makemakefile name
+#     creates Makefile in the current directory for name.tex
+
+cp ~/.local/bin/Makefile.template .
+if [ $# -eq 1 ]
+  then
+    sed s/paper/$1/ Makefile.template >Makefile
+    rm Makefile.template
+  else
+    mv Makefile.template Makefile
+fi
