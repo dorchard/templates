@@ -4,6 +4,7 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{color}
+\bibliographystyle{plain}
 
 \newcommand{\dnote}[1]{\textcolor{blue}{Dom: #1}}
 
